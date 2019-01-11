@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vue学习笔记</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="./vue.js"></script>
+</head>
+<style>
+    .activated{
+        color: red;
+    }
+</style>
+
+<body>
+    <h2>Vue</h2>
+    <ol>
+        <li>Vue不支持IE8及以下版本</li>
+        <li></li>
+        <li>{{}}:插值表达式</li>
+        <li>Vue由很多的实例组成</li>
+        <li>app.$data.message:$表示vue的实例属性和实例方法</li>
+        <li>app.$destroy():销毁实例</li>
+        <li>Vue中的this：调用this时会自动去data里找数据</li>
+    </ol>
+    <ol>Vue指令
+        <li>v-指定后面的内容是js的表达式 可以在后面加字符串</li>
+        <li>v-for:循环数据指令</li>
+        <li>v-on:绑定事件</li>
+        <li>v-model:双向数据绑定</li>
+        <li>v-text:用于设置div的显示内容</li>
+        <li>@click:相当于 v-on:click</li>
+        <li>
+            <ul>Vue.component:创建全局组件
+                <li>添加模版template</li>
+                <li>props:自组件接收父组件的值</li>
+            </ul>
+        </li>
+        <li>
+            <ul>var TodoItem=创建局部组件
+                <li>添加模版template</li>
+                <li>props:自组件接收父组件的值</li>
+                <li>在app内需要注册后才可以使用
+                    <pre>
+                        components:{
+                            TodoItem:TodoItem
+                            },
+                    </pre>
+                </li>
+            </ul>
+        </li>
+        <li>v-bind:向子组件传入一个绑定的值 可以简写成：</li>
+    </ol>
+    <ol>子父组件传值
+        <li>父组件向自组件传值:用v-bind绑定值 子组件用props接收</li>
+        <li>子组件向父组件传值:用this.$emit("delete")向外触发事件，在父组件上监听delete事件</li>
+
+    </ol>
+    <ol>Vue实例生命周期函数
+        <li>实质就是vue实例在某一个时间点会自动执行的函数</li>
+        <li>beforeCreate：在初始化事件和生命周期之后自动调用</li>
+        <li>created：在vue处理外部的注入和双向的绑定之后，基本完成初始化。自动调用</li>
+        <li>beforeMount:模版和数据挂载在挂载点之前 自动调用</li>
+        <li>mounted:在模版结合数据生成最终的实例挂载在页面之上（HelloWorld已经在页面显示）</li>
+        <li>beforeDestroy和destroy：在调用$destroy之后调用。前者在没有被销毁之前调用 后者在被销毁之后调用</li>
+        <li>beforeUpdate和updated：在数据发生改变之后才会调用，前者在渲染之前被调用，后者在重新渲染之后被调用</li>
+        <li>注意：不需要写在methods内</li>
+    </ol>
+    <ol>模版语法
+        <li>{{}}:插值表达式</li>
+        <li>v-text:和插值表达式作用一样 对标签转义</li>
+        <li>v-html:只显示内容 不对标签进行转义</li>
+    </ol>
+    <ol>计算属性，方法和侦听器
+        <li>computed</li>
+        <li>methods</li>
+        <li>watch</li>
+    </ol>
+    <ol>样式的绑定
+        <li>class的对象绑定</li>
+        <li>class的数组绑定</li>
+        <li>style的绑定</li>
+    </ol>
+    <ol>vue条件渲染
+        <li>v-if:决定元素是否显示</li>
+        <li>v-show:决定元素是否显示</li>
+        <li>区别在于当值为false时 前者把dom元素删除掉了 后者是display:none;</li>
+    </ol>
+
+    <!-- id="app"是一个挂载点 -->
+    <!-- <div id="app">{{content}}</div>
+    <div>{{content}}</div> -->
+
+    <div id="app">
+        <!-- 模版语法 -->
+        <!-- v-指定后面的内容是js的表达式 可以在后面加字符串 -->
+        <div>{{name + ' Lee'}}</div>
+        <div v-text="name + ' Lee'"></div>
+        <div v-html="name+ ' Lee'"></div>
+
+        <!-- 计算属性 -->
+        <!-- fullName的三种计算方式 computed 方法 watch监听 -->
+        <div>
+            {{fullName}}
+            <!-- {{fullName()}} -->
+            {{age}}
+        </div>
+
+        <!-- 样式的绑定 -->
+        <!-- 1 class 对象 -->
+        <!-- <div @click = "handleDivClick"
+             :class = "{activated: isActivated}"
+             >
+            改变颜色
+        </div> -->
+        <!-- 2 class 数组 -->
+        <!-- <div @click = "handleDivClick"
+             :class = "[activated]"
+             >
+            改变颜色
+        </div> -->
+        <!-- 3.style -->
+        <div @click="handleDivClick" :style="[styleObj,{fontSize:'20px'}]">
+            改变颜色
+        </div>
+
+        <!-- vue中的条件渲染 -->
+        <div>
+            <div v-show="show">{{message}}</div>
+            <div v-if="show">{{message}}</div>
+            <div v-else>Bye World</div>
+
+            <!-- 字符串判断 -->
+            <div v-if="show_chara === 'a'">This is A</div>
+            <div v-else-if="show_chara === 'b'">This is B</div>
+            <div v-else>This is Others</div>
+
+            <!-- key值（解决内容被复用的情况） -->
+            <div v-if="show">
+                用户名：<input type="text" key="username">
+            </div>
+            <div v-else>
+                邮箱名：<input type="text" key="passwordname">
+            </div>
+        </div>
+
+        <!-- 列表循环 template是一个占位符 不会渲染到页面上 -->
+        <div>
+            <div v-for="(item,index) of list" :key="item.id">
+                <div>{{item.text}} ---- {{index}}</div>
+                <span>{{item.text}}</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        //原生js
+        // var dom = document.getElementById('app');
+        // dom.innerHTML = 'Hello World'
+
+        // setTimeout(function(){
+        //     dom.innerHTML = 'byebye'
+        // },2000)
+
+        //创建一个Vue实例
+        var app = new Vue({
+            el: '#app', //实例负责管理的区域
+            // template: "<div>{{content}}</div>", //如果这里没有写模版 将会以外部的dom作为模版
+            data: {
+                content: 'Hello World', //data定义数据
+                // name: "<h1>Dell</h1>",
+                name: "Dell",
+
+                firstName: "Wen",
+                lastName: "Dan",
+                // fullName: 'Wen Dan',
+                age: 18,
+
+                // 样式绑定
+                // 1
+                // isActivated:false
+                // 2
+                // activated:''
+                // 3
+                styleObj: {
+                    color: "black"
+                },
+
+                // 条件渲染
+                show: false,
+                message: "条件渲染",
+                show_chara: 'a',
+
+                // 列表循环
+                // vue中  通过数组的下标来进行操作 无法实现响应式改变 只能通过vue提供的7个方法来操作
+                //pop push shift(删除第一项) unshift(在第一项添加东西) splice(分割数组) sort(排序) reverse(取反) 
+                list: [{
+                    id: 111111,
+                    text: "hello"
+                }, {
+                    id: 222222,
+                    text: "Dell"
+                }, {
+                    id: 333333,
+                    text: "Ammy"
+                }]
+            },
+
+            /* 样式绑定 class的对象 */
+            methods: {
+                handleDivClick: function () {
+                    // class对象
+                    // this.isActivated = !this.isActivated;
+                    //class 数组
+                    // this.activated = this.activated === "activated" ? "" : "activated"
+                    //style
+                    this.styleObj.color = this.styleObj.color === "black" ? "red" : "black"
+                }
+            },
+
+            // 计算fullName的三种方式
+            //3.watch 也有缓存
+            // watch: {
+            //     firstName: function () {
+            //         console.log("计算了一次")
+            //         this.fullName = this.firstName + " " + this.lastName
+            //     },
+            //     lastName: function () {
+            //         console.log("计算了一次")
+            //         this.fullName = this.firstName + " " + this.lastName
+            //     }
+            // },
+            //2.方法
+            // methods: {
+            //     fullName: function () {
+            //         console.log("计算了一次")
+            //         return this.firstName + " " + this.lastName
+            //     }
+            // },
+
+            //1.计算属性 有缓存 在firstName和lastName没有改变时  不会再计算一次
+
+            // computed: {
+            //     fullName: function () {
+            //         console.log("计算了一次")
+            //         return this.firstName + " " + this.lastName
+            //     }
+            // },
+
+            //有两个属性 get set
+            computed: {
+                fullName: {
+                    get: function () {
+                        return this.firstName + " " + this.lastName
+                    },
+                    set: function (value) {
+                        var arr = value.split(" ");
+                        this.firstName = arr[0];
+                        this.lastName = arr[1]
+                    }
+                }
+            },
+
+            //生命周期函数
+            beforeCreate: function () {
+                console.log("beforeCreat")
+            },
+            created: function () {
+                console.log("created")
+            },
+            beforeMount: function () {
+                console.log(this.$el);
+                console.log("beforeMount")
+            },
+            mounted: function () {
+                console.log(this.$el);
+                console.log("mounted")
+            },
+            beforeDestroy: function () {
+                console.log("beforeDestroy")
+            },
+            destroyed: function () {
+                console.log("destroyed")
+            },
+            beforeUpdate: function () {
+                console.log("beforeUpdate")
+            },
+            updated: function () {
+                console.log("updated")
+            }
+
+        })
+        setTimeout(function () {
+            app.$data.content = 'bye vue'
+        }, 2000)
+    </script>
+</body>
+
+</html>

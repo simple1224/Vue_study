@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo</title>
+    <script src="./vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="inputValue">
+        <button v-on:click="handleBtnClick">提交</button>
+        <ul>
+            <!-- <li v-for="item in list">{{item}}</li> -->
+            <!--  
+                todo-item相对于外层的容器是一个子组件
+                用content接收list中item的值
+                v-bind:向子组件传入值的作用
+            -->
+            <todo-item v-bind:content="item"
+                       v-bind:index="index"
+                       v-for="(item,index) in list"
+                       @delete="handleItemDelete">
+            </todo-item>
+        </ul>
+    </div>
+    <script>
+        //创建全局组件 可以在上面直接使用
+        // Vue.component("TodoItem",{
+        //     props:['content'],//接收父组件传来的值
+        //     template:"<li>{{content}}</li>"
+        // })
+        
+        // 创建一个局部组件 需要app中注册
+        var TodoItem = {
+            props:['content','index'],
+            template:"<li @click='handleItemClick'>{{content}}</li>",
+            methods:{
+                handleItemClick:function(){
+                    // 当点击li时 向外触发delete事件 并把index值传给父组件
+                    this.$emit("delete",this.index)
+                }
+            }
+        }
+        var app = new Vue({
+            el: '#app',
+            //components:用于注册局部组件
+            components:{
+                TodoItem:TodoItem
+            },
+            data: {
+                list: [],
+                inputValue: ''
+            },
+            methods: {
+                handleBtnClick: function () {
+                    //调用this时  会自动到data里找数据
+                    // alert(this.inputValue)
+                    this.list.push(this.inputValue);// 把获得的input值放入list中
+                    this.inputValue=''//输入后把input清空
+                },
+                handleItemDelete:function(index){
+                    console.log(index)
+                    //splice() 方法向/从数组中添加/删除项目，然后返回被删除的项目。
+                    this.list.splice(index,1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
