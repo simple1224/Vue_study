@@ -88,6 +88,45 @@
         <li>v-show:决定元素是否显示</li>
         <li>区别在于当值为false时 前者把dom元素删除掉了 后者是display:none;</li>
     </ol>
+    <ol>列表循环
+        <li>用vue提供的方法操作数组 pop push shift(删除第一项) unshift(在第一项添加东西) splice(分割数组) sort(排序) reverse(取反)</li>
+        <li>template是一个占位符 不会渲染到页面上</li>
+        <li>
+            <ul>添加数据的3种方法
+                <li>遍历方法（7个）</li>
+                <li>改变引用对象</li>
+                <li>set方法</li>
+            </ul>
+        </li>
+    </ol>
+    <ol>对象循环
+        <li> key是键名 item是键值 index是所属下标</li>
+        <ul>添加数据时,有两种方法
+            <li>改变引用对象</li>
+            <li>set方法</li>
+        </ul>
+    </ol>
+    <ol>Vue的set,get方法
+        <li>是Vue全局的方法 也是实例上的方法 </li>
+        <li>
+            <pre>
+                app.$set(app.userInfor,"address","beijing")
+                Vue.set(app.userInfor,"address","beijing")
+            </pre>
+        </li>
+    </ol>
+    <ol>组件使用的细节
+        <li>is属性解决模版bug</li>
+        <li>在子组件定义data时 必须用函数 而不是对象。原因是子组件会多次调用，值不相同 避免出现干扰</li>
+        <li>
+            <ul>ref:可以通过它获取到dom元素。
+                <li>当在写在一个div的时候，this.$refs.名字获取到的是标签对应的dom元素</li>
+                <li>当在组件上写ref时 获取到的是这个子组件</li>
+            </ul>
+        </li>
+    </ol>
+
+
 
     <!-- id="app"是一个挂载点 -->
     <!-- <div id="app">{{content}}</div>
@@ -152,9 +191,77 @@
                 <div>{{item.text}} ---- {{index}}</div>
                 <span>{{item.text}}</span>
             </div>
+            <!-- 列表内添加数据 -->
+            <pre>
+                app.list[1]={id:"44444",text:"我是修改的"}
+                app.list.splice(1,1,{id:"444444444",text:"dsdhsdgshdgshds"})
+                app.lsit.push={id:44444444，text:"大家"}
+                Vue.set(app.list,1,5)
+                app.$set(app.list,1,5)
+            </pre>
+
+            <!-- 对象循环 key是键名 item是键值 -->
+            <div v-for="(item,key,index) of userInfo">{{item}} --- {{key}} ---- {{index}}</div>
+            <!-- 在对象里加数据时 用更换引用的方式加 -->
+            <p>在对象里加数据时 用更换引用的方式加 </p>
+            <pre>
+                app.userInfor = {
+                    name:"Dell",
+                    age:19,
+                    gender:"male",
+                    salary:"secret",
+                    address:"beijing"
+                }
+            </pre>
+            <p>在对象里加数据时 用vue的set方法</p>
+            <pre>
+                app.$set(app.userInfor,"address","beijing")
+                Vue.set(app.userInfor,"address","beijing")
+            </pre>
         </div>
+
+        <!-- 组件的细节 -->
+        <!-- h5只规定 table下的标签只能是tr 直接放row会解析出错 用is属性解决该bug -->
+        <!-- is -->
+        <table>
+            <tbody>
+                <tr is="row"></tr>
+                <tr is="row"></tr>
+                <tr is="row"></tr>
+            </tbody>
+        </table>
+        <!-- 2 ref -->
+        <counter ref="one" @change='handleChange'></counter>
+        <counter ref="two" @change='handleChange'></counter>
+        <div>{{total}}</div>
     </div>
     <script>
+        // 组件的细节
+        Vue.component('row', {
+            // 自组件的data必须是函数
+            data: function () {
+                return {
+                    content: "This is a row"
+                }
+            },
+            template: "<tr><td>{{content}}</td></tr>"
+        })
+        Vue.component('counter', {
+            // 自组件的data必须是函数
+            template: "<div @click='handleClick'>{{number}}</div>",
+            data: function () {
+                return {
+                    number: 0
+                }
+            },
+            methods: {
+                handleClick: function () {
+                    this.number++;
+                    this.$emit('change')
+                }
+            }
+        })
+
         //原生js
         // var dom = document.getElementById('app');
         // dom.innerHTML = 'Hello World'
@@ -204,8 +311,21 @@
                 }, {
                     id: 333333,
                     text: "Ammy"
-                }]
+                }],
+                //对象循环
+                userInfo: {
+                    name: "Dell",
+                    age: 19,
+                    gender: "male",
+                    salary: "secret"
+                },
+
+                // 组件的细节
+                total: 0
             },
+
+
+
 
             /* 样式绑定 class的对象 */
             methods: {
@@ -216,6 +336,13 @@
                     // this.activated = this.activated === "activated" ? "" : "activated"
                     //style
                     this.styleObj.color = this.styleObj.color === "black" ? "red" : "black"
+                },
+
+                // 组件的细节
+                handleChange: function () {
+                    console.log(this.$refs.one)
+                    console.log(this.$refs.two.number)
+                    this.total = this.$refs.one + this.$refs.two.number
                 }
             },
 

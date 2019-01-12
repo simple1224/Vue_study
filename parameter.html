@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件参数校验与非props特性</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <ol>校验
+        <li>type:定义传入的类型</li>
+        <li>required:表示content这个值是否必须传</li>
+        <li>default:设置默认值</li>
+        <li>validator:自定义校验器（检测传入的content的长度是否大于5）</li>
+    </ol>
+    <ol>
+        <li>props特性：当父组件通过属性content向子组件传值时 ，子组件中同时也在内定义了content这个属性来接收。有一一对应的关系称为props特性</li>
+        <li>props特性的特点是：content="hello"不会在页面的dom结构显示 在子组件中可以通过this.content取到值</li>
+        <li>非props特性：父组件定义了content属性 而子组件没有接收。所以不能用插值表达式把它显示出来，同时content="hello"会展示在页面的dom中</li>
+    </ol>
+    <div id="root">
+        <child content="hello world"></child>
+    </div>
+    <script>
+        Vue.component('child',{
+            // 规定接收的content是字符串形式
+            // props: [content],
+            // props: {
+            //     content: [Number,String]
+            // },
+            props: {
+                content:{
+                    type:String,
+                    required:false,//表示content这个值是否必须传
+                    default:'default value', //如果没有传入值 则默认是这个
+                    validator:function(value){
+                        return (value.length > 5)
+                    }
+
+                }
+            },
+            template:" <div>{{content}}</div>"
+        })
+
+        var root = new Vue({
+            el:'#root'
+        })
+    </script>
+</body>
+</html>

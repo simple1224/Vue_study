@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>给组件定义一个原生事件</title>
+    <script src="./vue.js"></script>
+</head>
+
+<body>
+    <li>使用@click.native</li>
+    <li>当给组件绑定一个事件，实际上是自定义事件，真正点击的事件并不是绑定的事件。
+        如果想要触发自定义事件 需要在组件定义的模版内写@click事件 此时定义的才是原生的点击事件
+    </li>
+    <div id="root">
+        <child @click.native="handleClick"></child>
+        <child @click="handleClick"></child>
+    </div>
+    <script>
+        Vue.component('child', {
+            template: "<div @click='handleChildClick'>Child</div>",
+            methods:{
+                handleChildClick:function(){
+                    alert('click child')
+                    this.$emit('click')
+                } 
+            }
+        }
+        )
+        var root = new Vue({
+            el: '#root',
+            methods: {
+                handleClick: function () {
+                    alert("click")
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

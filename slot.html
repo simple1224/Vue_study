@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue的插槽（slot）</title>
+    <script src="./vue.js"></script>
+</head>
+
+<body>
+    <ol>如果在子组件内插入想要的dom结构
+        <li>通过comment传p标签是有问题的 1.必须外面包裹一个div 2.加的内容多了不方便 代码不便阅读</li>
+        <li>
+            <ul>slot：插槽 和 具名插槽
+                <li>插槽可以更方便插入dom结构 插槽只有一个</li>
+                <li>具名插槽有多个 可以通过name来调用</li>
+            </ul>
+        </li>
+    </ol>
+    <!-- 作用域插槽 -->
+    <ol>
+        作用域插槽：用于子组件做循环或者子组件内部结构由外部传进来决定
+        <li>必须以template包裹</li>
+        <li>要声明从子组件接收的数据都放在props中 slot-scope="props"</li>
+        <li>:item=item 子组件向父组件传递数据</li>
+        <li>父组件用template以及slot-scope="props"来接收数据</li>
+    </ol>
+
+    <div id="root">
+        <!-- 方式1 -->
+        <!-- <child content='<p>Dell</p>'></child> -->
+        <!-- 方式2 -->
+
+        <child>
+            <!-- <p>Dell</p> -->
+            <!-- <div class="header" slot="header">header</div> -->
+            <div class="footer" slot="footer">footer</div>
+        </child>
+        <child>
+            <!-- 作用域插槽 -->
+            <template slot-scope="props">
+                <h1>{{props.item}}</h1>
+            </template>
+        </child>
+    </div>
+    <script>
+        Vue.component('child', {
+            props: ['content'],
+            // 这样写的后果是｛｝被转义 显示出来
+            // template:'<div><p>Hello</p>{{content}}</div>'
+
+            // 方式1
+            // template: `<div>
+            //                 <p>Hello</p>
+            //                 <div v-html="this.content"></div>
+            //            </div>`
+
+            // 方式2 插槽
+            // template: `<div>
+            //                 <slot name="header">
+            //                     <h1>default header</h1>
+            //                 </slot> 
+            //                 <p>Hello</p>
+            //                 <slot name="footer"></slot> 
+            //                 // <slot>默认内容</slot> 
+            //            </div>`,
+
+            // 作用域插槽
+            data: function () {
+                return {
+                    list: [1, 2, 3, 4]
+                }
+            },
+            //  :item=item 子组件向父组件传递数据
+            // 父组件用template以及slot-scope="props"来接收数据
+            template: `<div>
+                            <ul>
+                                <slot   
+                                    v-for="item of list"
+                                    :item=item
+                                >
+                                </slot> 
+                            </ul>
+                       </div>`,
+        })
+        var root = new Vue({
+            el: '#root'
+        })
+    </script>
+</body>
+
+</html>
